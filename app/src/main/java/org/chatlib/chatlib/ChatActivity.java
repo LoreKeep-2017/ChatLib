@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -19,8 +21,13 @@ public class ChatActivity extends Activity {
     private EditText mInputMessageText;
     private Button mSendMessage;
     private RecyclerView mChatRV;
-    private ChatNetworkManager mNetworkManager;
 
+    private MessageAdapter mMessageAdapter;
+    private ChatNetworkManager mNetworkManager;
+    private MessageParser mMessageParser;
+
+
+    //region Activity Lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,37 +38,48 @@ public class ChatActivity extends Activity {
         mSendMessage = findViewById(R.id.send_button);
         mSendMessage.setOnClickListener(new SendMessage());
 
-        mChatRV = findViewById(R.id.chat_recycler);
+        mMessageAdapter = new MessageAdapter(new ArrayList<Message>());
+
+        mChatRV = findViewById(R.id.chat_message_list);
         mChatRV.setLayoutManager(new LinearLayoutManager(this));
-        mChatRV.setAdapter(null);
+        mChatRV.setAdapter(mMessageAdapter);
 
         mNetworkManager = new ChatNetworkManager(new WSListener());
+        mMessageParser = new MessageParser();
     }
 
-    private void updateChat() {
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mNetworkManager.disconnect();
     }
+
+    //endregion
 
     //region Listener
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            mNetworkManager.sendMessage(mInputMessageText.getText().toString());
+            String jsonMessage = mMessageParser.parseToJSON(mInputMessageText
+                    .getText()
+                    .toString());
             mInputMessageText.setText("");
+
+            mNetworkManager.sendMessage(jsonMessage);
         }
     }
 
     private class WSListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
-
+            mNetworkManager.connect();
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-
+            Message receiveMessage = mMessageParser.parseToMessage(text);
+            mMessageAdapter.addMessage(receiveMessage);
         }
-
 
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, Response response) {

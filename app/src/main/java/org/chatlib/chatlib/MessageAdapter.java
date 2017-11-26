@@ -30,7 +30,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(MessageVH holder, int position) {
         Message curMessage = mMessages.get(position);
-        holder.mBody.setText(curMessage.mBody);
+        holder.mMessageText.setText(curMessage.getMessageText());
     }
 
     @Override
@@ -39,11 +39,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     protected class MessageVH extends RecyclerView.ViewHolder {
-        TextView mBody;
+        TextView mMessageText;
 
         public MessageVH(View itemView) {
             super(itemView);
-            mBody = itemView.findViewById(R.id.message_item);
+            mMessageText = itemView.findViewById(R.id.message_text);
         }
     }
 }
