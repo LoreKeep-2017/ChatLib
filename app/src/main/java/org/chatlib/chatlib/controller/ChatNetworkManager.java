@@ -1,4 +1,4 @@
-package org.chatlib.chatlib;
+package org.chatlib.chatlib.controller;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

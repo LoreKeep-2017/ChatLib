@@ -1,4 +1,4 @@
-package org.chatlib.chatlib;
+package org.chatlib.chatlib.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,17 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.chatlib.chatlib.R;
+import org.chatlib.chatlib.model.Message;
+
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageVH> {
-    private List<Message> mMessages;
+    private List<Message> mRequestBodies;
 
-    public MessageAdapter(List<Message> mMessages) {
-        this.mMessages = mMessages;
+    public MessageAdapter(List<Message> mRequestBodies) {
+        this.mRequestBodies = mRequestBodies;
     }
 
-    public void addMessage(Message message) {
-        mMessages.add(message);
+    public void addMessage(Message requestBody) {
+        mRequestBodies.add(requestBody);
         notifyDataSetChanged();
     }
 
@@ -29,13 +32,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(MessageVH holder, int position) {
-        Message curMessage = mMessages.get(position);
-        holder.mMessageText.setText(curMessage.getMessageText());
+        Message curRequestBody = mRequestBodies.get(position);
+        holder.mMessageText.setText(curRequestBody.getBody());
     }
 
     @Override
     public int getItemCount() {
-        return mMessages.size();
+        return mRequestBodies.size();
     }
 
     protected class MessageVH extends RecyclerView.ViewHolder {

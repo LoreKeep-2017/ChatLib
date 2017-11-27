@@ -1,4 +1,6 @@
-package org.chatlib.chatlib;
+package org.chatlib.chatlib.controller;
+
+import org.chatlib.chatlib.model.Message;
 
 public class MessageParser {
 

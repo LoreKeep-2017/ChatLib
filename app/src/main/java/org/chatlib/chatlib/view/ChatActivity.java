@@ -1,4 +1,4 @@
-package org.chatlib.chatlib;
+package org.chatlib.chatlib.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import org.chatlib.chatlib.R;
+import org.chatlib.chatlib.controller.ChatNetworkManager;
+import org.chatlib.chatlib.controller.MessageParser;
+import org.chatlib.chatlib.model.Message;
 
 import java.util.ArrayList;
 
@@ -77,8 +82,8 @@ public class ChatActivity extends Activity {
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            Message receiveMessage = mMessageParser.parseToMessage(text);
-            mMessageAdapter.addMessage(receiveMessage);
+            Message receiveRequestBody = mMessageParser.parseToMessage(text);
+            mMessageAdapter.addMessage(receiveRequestBody);
         }
 
         @Override

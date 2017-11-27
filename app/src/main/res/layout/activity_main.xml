@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.chatlib.chatlib.MainActivity">
+    tools:context="org.chatlib.chatlib.view.MainActivity">
 
     <Button
         android:id="@+id/create_chat_button"
