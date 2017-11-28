@@ -60,37 +60,55 @@ public class ChatActivity extends Activity {
         super.onDestroy();
         mNetworkManager.disconnect();
     }
-
     //endregion
 
     //region Listener
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Message message = new Message("client",
-                    mInputMessageText.getText().toString());
-
-            ClientRequest request = new ClientRequest(Action.SEND_MESSAGE.name(),
-                    new Message[] {message});
-
-            String jsonMessage = mMessageParser.parseToJSON(request);
+            send(mInputMessageText.getText().toString());
             mInputMessageText.setText("");
+        }
 
-            mNetworkManager.sendMessage(jsonMessage);
+        private void send(String text) {
+            if (text != null && !text.isEmpty()) {
+                Message message = new Message("client", text);
+
+                ClientRequest request = new ClientRequest(
+                        Action.SEND_MESSAGE.toString(),
+                        new Message[]{message}
+                );
+
+                String jsonMessage = mMessageParser.parseToJSON(request);
+                mNetworkManager.sendMessage(jsonMessage);
+            }
         }
     }
 
-    private class WSListener extends WebSocketListener {
+    public class WSListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, okhttp3.Response response) {
-            mNetworkManager.connect();
+            /*String json = mNetworkManager.initChatting();
+            Greeting greeting = mMessageParser.parseGreeting(json);
+            mMessageAdapter.addMessage(new Message("operator", greeting.getGreeting()));*/
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             OperatorResponse receivedResponse = mMessageParser.parseToResponse(text);
             switch (receivedResponse.getAction()) {
-
+                case "sendMessage":
+                    Message[] mes = receivedResponse
+                            .getBody1()
+                            .getMessages();
+                    mMessageAdapter.addMessage(mes[mes.length - 1]);
+                    break;
+                case "sendFirstMessage":
+                    break;
+                case "changeStatusRoom":
+                    break;
+                default:
+                    break;
             }
         }
 

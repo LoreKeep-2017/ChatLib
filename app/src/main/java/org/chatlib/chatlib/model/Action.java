@@ -12,4 +12,9 @@ public enum Action {
     Action(String mAction) {
         this.mAction = mAction;
     }
+
+    @Override
+    public String toString() {
+        return mAction;
+    }
 }

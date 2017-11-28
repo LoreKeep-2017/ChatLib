@@ -8,11 +8,11 @@ public class OperatorResponseBody {
     @SerializedName("messages")
     private Message[] mMessages;
 
-    public Message[] getmMessages() {
+    public Message[] getMessages() {
         return mMessages;
     }
 
-    public void setmMessages(Message[] mMessages) {
+    public void setMessages(Message[] mMessages) {
         this.mMessages = mMessages;
     }
 }
