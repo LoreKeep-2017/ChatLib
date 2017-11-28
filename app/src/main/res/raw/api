@@ -1,0 +1,246 @@
+//request
+{
+  "type": "client",
+  "action": "sendDescriptionRoom",
+  "body": {
+    "description": "описание2",
+    "title": "название"
+  }
+}
+
+//response
+{
+  "action": "changeStatusRoom",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "id": 1,
+    "client": {
+      "id": 1,
+      "nick": "nick"
+    },
+    "operator": {
+      "id": 1
+    },
+    "messages": [
+      {
+        "author": "operator",
+        "body": "hello",
+        "room": 1,
+        "time": 1507239556
+      },
+      {
+        "author": "operator",
+        "body": "hello",
+        "room": 1,
+        "time": 1507239560
+      }
+    ],
+    "status": "roomNew",
+    "description": "описание2",
+    "title": "название"
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "sendMessage",
+  "body": {
+    "author": "client",
+    "body": "сообщение",
+  }
+}
+
+//response
+{
+  "action": "sendMessage",
+  "status": "OK",
+  "code": 200,
+  "room": 1,
+  "body": [
+    {
+      "author": "operator",
+      "body": "hello",
+      "room": 1,
+      "time": 1507239556,
+      "urlImage": "/some/url/on/server"
+    },
+    {
+      "author": "operator",
+      "body": "hello",
+      "room": 1,
+      "time": 1507239560
+    },
+    {
+      "author": "client",
+      "body": "название",
+      "room": 1,
+      "time": 1507239748
+    },
+    {
+      "author": "client",
+      "body": "название",
+      "room": 1,
+      "time": 1507239754
+    }
+  ]
+}
+
+//------------------------------------
+//response
+{
+  "action": "changeStatusRoom",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "id": 1,
+    "client": {
+      "id": 1,
+      "nick": "nick"
+    },
+    "operator": {
+      "id": 1
+    },
+    "messages": [
+      {
+        "author": "client",
+        "body": "название",
+        "room": 1,
+        "time": 1507242050
+      }
+    ],
+    "status": "roomInProgress",
+    "description": "описание2",
+    "title": "название"
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "closeRoom"
+}
+
+//response
+{
+  "action": "changeStatusRoom",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "id": 1,
+    "client": {
+      "id": 1,
+      "nick": "nick"
+    },
+    "messages": [],
+    "status": "roomClose"
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "getAllMessages"
+}
+
+//response
+{
+  "action": "getAllMessages",
+  "status": "OK",
+  "code": 200,
+  "body": [
+    {
+      "author": "operator",
+      "body": "hello",
+      "room": 1,
+      "time": 1507364687
+    },
+    {
+      "author": "client",
+      "body": "описание22",
+      "room": 1,
+      "time": 1507364702
+    }
+  ]
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "restoreRoom",
+  "body": {
+    "rid": 42
+  }
+}
+
+//response
+{
+  "action": "restoreRoom",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "id": 42,
+    "client": {
+      "id": 2,
+      "nick": ""
+    },
+    "messages": [],
+    "status": "roomBusy",
+    "description": "оп2",
+    "title": "на2",
+    "time": 1510611217
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "sendFirstMessage",
+  "body": {
+    "author": "client",
+    "body": "сsssss"
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "sendNickname",
+  "body": {
+    "nickname": "clientqqqqqqqqqq"
+  }
+}
+
+//response
+{
+  "action": "sendNickname",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "nickname": "clientqqqqqqqqqq"
+  }
+}
+
+//------------------------------------
+//request
+{
+  "type": "client",
+  "action": "getNickname"
+}
+
+//response
+{
+  "action": "getNickname",
+  "status": "OK",
+  "code": 200,
+  "body": {
+    "nickname": "clientqqqqqqqqqq"
+  }
+}
