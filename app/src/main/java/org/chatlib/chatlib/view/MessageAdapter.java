@@ -12,14 +12,14 @@ import org.chatlib.chatlib.model.Message;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageVH> {
-    private List<Message> mRequestBodies;
+    private List<Message> mMessages;
 
     public MessageAdapter(List<Message> mRequestBodies) {
-        this.mRequestBodies = mRequestBodies;
+        this.mMessages = mRequestBodies;
     }
 
-    public void addMessage(Message requestBody) {
-        mRequestBodies.add(requestBody);
+    public void addMessage(Message message) {
+        mMessages.add(message);
         notifyDataSetChanged();
     }
 
@@ -32,13 +32,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(MessageVH holder, int position) {
-        Message curRequestBody = mRequestBodies.get(position);
-        holder.mMessageText.setText(curRequestBody.getBody());
+        Message curMessage = mMessages.get(position);
+        holder.mMessageText.setText(curMessage.getBody());
     }
 
     @Override
     public int getItemCount() {
-        return mRequestBodies.size();
+        return mMessages.size();
     }
 
     protected class MessageVH extends RecyclerView.ViewHolder {

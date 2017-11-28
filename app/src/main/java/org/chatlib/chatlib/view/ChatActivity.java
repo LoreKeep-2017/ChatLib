@@ -12,11 +12,13 @@ import android.widget.EditText;
 import org.chatlib.chatlib.R;
 import org.chatlib.chatlib.controller.ChatNetworkManager;
 import org.chatlib.chatlib.controller.MessageParser;
+import org.chatlib.chatlib.model.Action;
 import org.chatlib.chatlib.model.Message;
+import org.chatlib.chatlib.model.client.ClientRequest;
+import org.chatlib.chatlib.model.operator.OperatorResponse;
 
 import java.util.ArrayList;
 
-import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
@@ -65,9 +67,13 @@ public class ChatActivity extends Activity {
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            String jsonMessage = mMessageParser.parseToJSON(mInputMessageText
-                    .getText()
-                    .toString());
+            Message message = new Message("client",
+                    mInputMessageText.getText().toString());
+
+            ClientRequest request = new ClientRequest(Action.SEND_MESSAGE.name(),
+                    new Message[] {message});
+
+            String jsonMessage = mMessageParser.parseToJSON(request);
             mInputMessageText.setText("");
 
             mNetworkManager.sendMessage(jsonMessage);
@@ -76,18 +82,20 @@ public class ChatActivity extends Activity {
 
     private class WSListener extends WebSocketListener {
         @Override
-        public void onOpen(WebSocket webSocket, Response response) {
+        public void onOpen(WebSocket webSocket, okhttp3.Response response) {
             mNetworkManager.connect();
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            Message receiveRequestBody = mMessageParser.parseToMessage(text);
-            mMessageAdapter.addMessage(receiveRequestBody);
+            OperatorResponse receivedResponse = mMessageParser.parseToResponse(text);
+            switch (receivedResponse.getAction()) {
+
+            }
         }
 
         @Override
-        public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+        public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
             Log.wtf(TAG, t);
         }
     }

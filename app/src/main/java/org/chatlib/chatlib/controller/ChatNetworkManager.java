@@ -7,7 +7,7 @@ import okhttp3.WebSocketListener;
 
 public class ChatNetworkManager {
     private final Request mApiReq = new Request.Builder()
-            .url("ws://")
+            .url("ws://139.59.139.151:80/api/v1/client/")
             .addHeader("Origin", "*")
             .addHeader("Pragma", "no-cache")
             .addHeader("Cache-Control", "no-cache")
