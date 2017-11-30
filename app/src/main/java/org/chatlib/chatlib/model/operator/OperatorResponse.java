@@ -15,6 +15,9 @@ public class OperatorResponse {
     @SerializedName("body")
     private OperatorResponseBody mBody;
 
+    @SerializedName("greating")
+    private String greeting;
+
     public String getAction() {
         return mAction;
     }
@@ -39,11 +42,19 @@ public class OperatorResponse {
         this.mCode = mCode;
     }
 
-    public OperatorResponseBody getBody1() {
+    public OperatorResponseBody getBody() {
         return mBody;
     }
 
-    public void setBody1(OperatorResponseBody mBody) {
+    public void setBody(OperatorResponseBody mBody) {
         this.mBody = mBody;
+    }
+
+    public String getGreeting() {
+        return greeting;
+    }
+
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
     }
 }

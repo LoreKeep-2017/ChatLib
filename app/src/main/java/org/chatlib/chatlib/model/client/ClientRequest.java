@@ -10,7 +10,7 @@ public class ClientRequest {
         mType = "client";
     }
 
-    public ClientRequest(String mAction, Message[] mBody) {
+    public ClientRequest(String mAction, Message mBody) {
         this();
         this.mAction = mAction;
         this.mBody = mBody;
@@ -23,7 +23,7 @@ public class ClientRequest {
     private String mAction;
 
     @SerializedName("body")
-    private Message[] mBody;
+    private Message mBody;
 
     public String getAction() {
         return mAction;
@@ -33,11 +33,11 @@ public class ClientRequest {
         this.mAction = mAction;
     }
 
-    public Message[] getBody() {
+    public Message getmBody() {
         return mBody;
     }
 
-    public void setBody(Message[] mBody) {
+    public void setmBody(Message mBody) {
         this.mBody = mBody;
     }
 }

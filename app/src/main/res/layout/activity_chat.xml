@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp"
     tools:context="org.chatlib.chatlib.view.ChatActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_message_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_height="match_parent"
         tools:listitem="@layout/message_item"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/chat_message_list">
 
         <EditText
             android:id="@+id/input_message_text"
@@ -34,4 +31,4 @@
             android:text="отправить"/>
 
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

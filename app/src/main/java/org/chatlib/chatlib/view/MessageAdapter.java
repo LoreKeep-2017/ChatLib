@@ -19,21 +19,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     public void addMessage(Message message) {
-        mMessages.add(message);
-        notifyDataSetChanged();
+        if (message.getBody() != null
+                && !message.getBody().isEmpty())
+            mMessages.add(message);
     }
 
     @Override
     public MessageVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater
+                .from(parent.getContext())
                 .inflate(R.layout.message_item, parent, false);
         return new MessageVH(view);
     }
 
     @Override
     public void onBindViewHolder(MessageVH holder, int position) {
-        Message curMessage = mMessages.get(position);
-        holder.mMessageText.setText(curMessage.getBody());
+        holder.bind(position);
     }
 
     @Override
@@ -41,12 +42,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return mMessages.size();
     }
 
-    protected class MessageVH extends RecyclerView.ViewHolder {
+    class MessageVH extends RecyclerView.ViewHolder {
         TextView mMessageText;
 
-        public MessageVH(View itemView) {
+        MessageVH(View itemView) {
             super(itemView);
             mMessageText = itemView.findViewById(R.id.message_text);
+        }
+
+        void bind(int position) {
+            Message curMessage = mMessages.get(position);
+            mMessageText.setText(curMessage.getBody());
         }
     }
 }

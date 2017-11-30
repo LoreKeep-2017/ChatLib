@@ -28,31 +28,35 @@ public class Message {
         return mAuthor;
     }
 
-    public void setAuthor(String mAuthor) {
+    public Message setAuthor(String mAuthor) {
         this.mAuthor = mAuthor;
+        return this;
     }
 
     public String getBody() {
         return mBody;
     }
 
-    public void setBody(String mBody) {
+    public Message setBody(String mBody) {
         this.mBody = mBody;
+        return this;
     }
 
     public int getIdRoom() {
         return mIdRoom;
     }
 
-    public void setIdRoom(int mIdRoom) {
+    public Message setIdRoom(int mIdRoom) {
         this.mIdRoom = mIdRoom;
+        return this;
     }
 
     public long getTime() {
         return mTime;
     }
 
-    public void setTime(long mTime) {
+    public Message setTime(long mTime) {
         this.mTime = mTime;
+        return this;
     }
 }
