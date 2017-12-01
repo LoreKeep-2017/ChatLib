@@ -30,6 +30,7 @@ public class ChatNetworkManager {
             .addHeader("Sec-WebSocket-Extensions", "permessage-deflate")
             .build();
 
+    private static boolean isFirst = true;
 
     private OkHttpClient mOkClient;
     private WebSocket mWebSocket;
@@ -45,8 +46,15 @@ public class ChatNetworkManager {
         if (message != null && !message.isEmpty()) {
             Message m = new Message("client", message);
 
+            Action action = Action.SEND_MESSAGE;
+
+            if (isFirst) {
+                action = Action.SEND_FIRST_MESSAGE;
+                isFirst = false;
+            }
+
             ClientRequest request = new ClientRequest(
-                    Action.SEND_MESSAGE.toString(),
+                    action.toString(),
                     m
             );
 
@@ -97,5 +105,6 @@ public class ChatNetworkManager {
 
     public void disconnect() {
         mWebSocket.close(1000, "OK");
+        isFirst = false;
     }
 }
