@@ -54,7 +54,7 @@
             android:id="@+id/input_message_text"
             android:hint="Введите сообщение"
             android:background="@android:color/transparent"
-            android:layout_gravity="top"
+            android:layout_gravity="center"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_width="0dp"
