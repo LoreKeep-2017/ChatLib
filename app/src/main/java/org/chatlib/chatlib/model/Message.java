@@ -2,6 +2,9 @@ package org.chatlib.chatlib.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Message {
     @SerializedName("author")
     private String mAuthor;
@@ -22,6 +25,13 @@ public class Message {
     public Message(String mAuthor, String mBody) {
         this.mAuthor = mAuthor;
         this.mBody = mBody;
+
+    }
+
+    public Message(String mAuthor, String mBody, long Time) {
+        this.mAuthor = mAuthor;
+        this.mBody = mBody;
+        this.mTime = Time;
     }
 
     public String getAuthor() {
@@ -51,12 +61,25 @@ public class Message {
         return this;
     }
 
-    public long getTime() {
-        return mTime;
+    public String getTime() {
+        //return mTime;
+        return getDate(mTime * 1000L);
     }
 
     public Message setTime(long mTime) {
         this.mTime = mTime;
         return this;
+    }
+
+    private String getDate(long timeStamp){
+
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date netDate = (new Date(timeStamp));
+            return sdf.format(netDate);
+        }
+        catch(Exception ex){
+            return "xx";
+        }
     }
 }

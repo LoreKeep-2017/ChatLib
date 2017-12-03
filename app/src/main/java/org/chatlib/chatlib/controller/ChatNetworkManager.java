@@ -6,6 +6,7 @@ import org.chatlib.chatlib.model.client.ClientRequest;
 import org.chatlib.chatlib.model.operator.OperatorResponse;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -76,7 +77,7 @@ public class ChatNetworkManager {
             e.printStackTrace();
         }
 
-        return new Message("operator", result);
+        return new Message("operator", result, Calendar.getInstance().getTime().getTime() / 1000L);
     }
 
     public Message getResponseMessage(String responseText) {
