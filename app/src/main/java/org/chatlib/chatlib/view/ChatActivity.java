@@ -41,7 +41,9 @@ public class ChatActivity extends Activity {
         mMessageAdapter = new MessageAdapter(new ArrayList<>());
 
         mChatRV = findViewById(R.id.chat_message_list);
-        mChatRV.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        mChatRV.setLayoutManager(linearLayoutManager);
         mChatRV.setAdapter(mMessageAdapter);
 
         mNetworkManager = new ChatNetworkManager(new WSListener());

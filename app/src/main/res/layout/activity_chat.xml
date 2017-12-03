@@ -1,34 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     tools:context="org.chatlib.chatlib.view.ChatActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_message_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:stackFromEnd ="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/message_divider"
         tools:listitem="@layout/message_item"/>
 
+    <!-- A horizontal line between the chatbox and RecyclerView -->
+    <View
+        android:id="@+id/message_divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#dfdfdf"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/edit_message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/edit_message"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:minHeight="48dp"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_alignBottom="@id/chat_message_list">
 
         <EditText
             android:id="@+id/input_message_text"
+            android:hint="Введите сообщение"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_weight="100"/>
+            android:maxLines="6"/>
 
         <Button
             android:id="@+id/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="отправить"/>
+            android:background="@drawable/ic_send_button"
+            android:clickable="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:layout_gravity="bottom" />
+
 
     </LinearLayout>
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
