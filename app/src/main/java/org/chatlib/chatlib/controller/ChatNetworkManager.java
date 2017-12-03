@@ -15,7 +15,7 @@ import okhttp3.WebSocketListener;
 
 public class ChatNetworkManager {
     private final Request mApiReq = new Request.Builder()
-            .url("ws://139.59.139.151:8080/api/v1/client")
+            .url("ws://139.59.139.151/api/v1/client")
             .addHeader("Origin", "*")
             .addHeader("Pragma", "no-cache")
             .addHeader("Cache-Control", "no-cache")
@@ -23,7 +23,7 @@ public class ChatNetworkManager {
             .build();
 
     private final Request mGreeting = new Request.Builder()
-            .url("http://139.59.139.151:8080/api/v1/greating")
+            .url("http://139.59.139.151/greating/")
             .addHeader("Origin", "*")
             .addHeader("Pragma", "no-cache")
             .addHeader("Cache-Control", "no-cache")
