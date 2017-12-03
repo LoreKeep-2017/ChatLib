@@ -24,6 +24,9 @@ public class Message {
     @SerializedName("imageFormat")
     private String mImageFormat;
 
+    @SerializedName("imageUrl")
+    private String mImageUrl;
+
 
 
 
@@ -94,5 +97,32 @@ public class Message {
         catch(Exception ex){
             return "xx";
         }
+    }
+
+    public String getImage() {
+        return mImage;
+    }
+
+    public Message setImage(String mImage) {
+        this.mImage = mImage;
+        return this;
+    }
+
+    public String getImageFormat() {
+        return mImageFormat;
+    }
+
+    public Message setImageFormat(String mImageFormat) {
+        this.mImageFormat = mImageFormat;
+        return this;
+    }
+
+    public String getImageUrl() {
+        return mImageUrl;
+    }
+
+    public Message setImageUrl(String mImageUrl) {
+        this.mImageUrl = mImageUrl;
+        return this;
     }
 }

@@ -1,15 +1,22 @@
 package org.chatlib.chatlib.view;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.chatlib.chatlib.R;
+import org.chatlib.chatlib.controller.ChatNetworkManager;
 import org.chatlib.chatlib.model.Message;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -20,14 +27,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_MESSAGE_SENT = 0;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 1;
 
-    public MessageAdapter(List<Message> mRequestBodies) {
+    private Context context;
+
+    public MessageAdapter(Context context, List<Message> mRequestBodies) {
+        this.context = context;
         this.mMessages = mRequestBodies;
     }
 
     public void addMessage(Message message) {
         if (message.getBody() != null
-                && !message.getBody().isEmpty())
-            mMessages.add(message);
+                && !message.getBody().isEmpty() || message.getImageUrl() != null && !message.getImageUrl().isEmpty())
+        mMessages.add(message);
     }
 
     @Override
@@ -87,33 +97,55 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     class MessageVH extends RecyclerView.ViewHolder {
         TextView mMessageText;
         TextView mMessageTime;
+        ImageView mMessageImage;
 
         MessageVH(View itemView) {
             super(itemView);
             mMessageText = itemView.findViewById(R.id.message_text);
             mMessageTime = itemView.findViewById(R.id.message_time);
+            mMessageImage = itemView.findViewById(R.id.message_image);
         }
 
 
         void bind(Message message) {
-            mMessageText.setText(message.getBody());
+            if (message.getBody() == null || message.getBody().isEmpty()){
+                mMessageText.setVisibility(View.GONE);
+            } else {
+                mMessageText.setText(message.getBody());
+            }
             mMessageTime.setText(message.getTime());
+            if (message.getImageUrl() != null) {
+                Picasso.with(context).
+                        load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl()).
+                        into(mMessageImage);
+            }
         }
     }
 
     class MessageReceiveVH extends RecyclerView.ViewHolder {
         TextView mMessageText;
         TextView mMessageTime;
+        ImageView mMessageImage;
 
         MessageReceiveVH(View itemView) {
             super(itemView);
             mMessageText = itemView.findViewById(R.id.message_receive_text);
             mMessageTime = itemView.findViewById(R.id.message_receive_time);
+            mMessageImage = itemView.findViewById(R.id.message_receive_image);
         }
 
         void bind(Message message) {
-            mMessageText.setText(message.getBody());
+            if (message.getBody() == null || message.getBody().isEmpty()){
+                mMessageText.setVisibility(View.GONE);
+            } else {
+                mMessageText.setText(message.getBody());
+            }
             mMessageTime.setText(message.getTime());
+            if (message.getImageUrl() != null) {
+                Picasso.with(context).
+                        load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl()).
+                        into(mMessageImage);
+            }
         }
     }
 }

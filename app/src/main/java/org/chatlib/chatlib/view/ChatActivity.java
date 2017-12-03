@@ -66,7 +66,9 @@ public class ChatActivity extends Activity {
         mDeleteImageButton = findViewById(R.id.delete_image);
         mDeleteImageButton.setOnClickListener(new DeleteImageListener());
 
-        mMessageAdapter = new MessageAdapter(new ArrayList<>());
+        mNetworkManager = new ChatNetworkManager(new WSListener());
+
+        mMessageAdapter = new MessageAdapter(getApplicationContext(), new ArrayList<>());
 
         mChatRV = findViewById(R.id.chat_message_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -74,7 +76,7 @@ public class ChatActivity extends Activity {
         mChatRV.setLayoutManager(linearLayoutManager);
         mChatRV.setAdapter(mMessageAdapter);
 
-        mNetworkManager = new ChatNetworkManager(new WSListener());
+
     }
 
     @Override
@@ -98,15 +100,17 @@ public class ChatActivity extends Activity {
                 byte[] bb = bos.toByteArray();
                 image = android.util.Base64.encodeToString(bb, android.util.Base64.DEFAULT);
             }
-            mNetworkManager.sendMessage(mInputMessageText.getText().toString(), image);
-            mInputMessageText.setText("");
+            if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || image != null) {
+                mNetworkManager.sendMessage(mInputMessageText.getText().toString(), image);
+                mInputMessageText.setText("");
 
-            //clear image
-            mImageView.setImageURI(null);
-            mDeleteImageButton.setVisibility(View.GONE);
-            mImageView.getLayoutParams().height = 0;
-            mImageView.getLayoutParams().width = 0;
-            mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                //clear image
+                mImageView.setImageURI(null);
+                mDeleteImageButton.setVisibility(View.GONE);
+                mImageView.getLayoutParams().height = 0;
+                mImageView.getLayoutParams().width = 0;
+                mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            }
 
         }
     }

@@ -6,8 +6,11 @@ import org.chatlib.chatlib.model.client.ClientRequest;
 import org.chatlib.chatlib.model.operator.OperatorResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,7 +47,7 @@ public class ChatNetworkManager {
     }
 
     public void sendMessage(String message, String image) {
-        if (message != null && !message.isEmpty()) {
+//        if (message != null && !message.isEmpty() || image != null) {
             Message m = new Message("client", message, image);
 
             Action action = Action.SEND_MESSAGE;
@@ -61,7 +64,7 @@ public class ChatNetworkManager {
 
             String jsonMessage = mMessageParser.parseToJSON(request);
             mWebSocket.send(jsonMessage);
-        }
+//        }
     }
 
     public Message sendAndGetFirstMessage() {
