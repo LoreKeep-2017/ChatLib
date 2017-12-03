@@ -43,9 +43,9 @@ public class ChatNetworkManager {
         mMessageParser = new MessageParser();
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(String message, String image) {
         if (message != null && !message.isEmpty()) {
-            Message m = new Message("client", message);
+            Message m = new Message("client", message, image);
 
             Action action = Action.SEND_MESSAGE;
 

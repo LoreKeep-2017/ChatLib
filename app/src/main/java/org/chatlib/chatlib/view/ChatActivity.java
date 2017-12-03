@@ -3,7 +3,9 @@ package org.chatlib.chatlib.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,7 +22,9 @@ import android.widget.LinearLayout;
 import org.chatlib.chatlib.R;
 import org.chatlib.chatlib.controller.ChatNetworkManager;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -84,8 +88,26 @@ public class ChatActivity extends Activity {
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            mNetworkManager.sendMessage(mInputMessageText.getText().toString());
+            String image = null;
+            if (mImageView.getDrawable() != null) {
+                mImageView.buildDrawingCache();
+                BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
+                byte[] bb = bos.toByteArray();
+                image = android.util.Base64.encodeToString(bb, android.util.Base64.DEFAULT);
+            }
+            mNetworkManager.sendMessage(mInputMessageText.getText().toString(), image);
             mInputMessageText.setText("");
+
+            //clear image
+            mImageView.setImageURI(null);
+            mDeleteImageButton.setVisibility(View.GONE);
+            mImageView.getLayoutParams().height = 0;
+            mImageView.getLayoutParams().width = 0;
+            mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         }
     }
 
@@ -104,11 +126,9 @@ public class ChatActivity extends Activity {
         public void onClick(View view) {
             mImageView.setImageURI(null);
             mDeleteImageButton.setVisibility(View.GONE);
-            mImageView.getLayoutParams().height = 0;//LinearLayout.LayoutParams.WRAP_CONTENT;
-            mImageView.getLayoutParams().width = 0;//LinearLayout.LayoutParams.WRAP_CONTENT;
+            mImageView.getLayoutParams().height = 0;
+            mImageView.getLayoutParams().width = 0;
             mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//            ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) mLinearLayout.getLayoutParams();
-//            lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         }
     }
 

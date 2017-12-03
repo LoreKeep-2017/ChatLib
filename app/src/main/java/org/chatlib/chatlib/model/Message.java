@@ -18,13 +18,26 @@ public class Message {
     @SerializedName("time")
     private long mTime;
 
+    @SerializedName("image")
+    private String mImage;
+
+    @SerializedName("imageFormat")
+    private String mImageFormat;
+
+
+
+
     public Message() {
 
     }
 
-    public Message(String mAuthor, String mBody) {
+    public Message(String mAuthor, String mBody, String mImage) {
         this.mAuthor = mAuthor;
         this.mBody = mBody;
+        this.mImage = mImage;
+        if (mImage !=null) {
+            mImageFormat = "png";
+        }
 
     }
 
