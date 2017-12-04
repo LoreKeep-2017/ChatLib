@@ -109,6 +109,7 @@ public class ChatActivity extends Activity {
                 mInputMessageText.setText("");
 
                 //clear image
+                imageString = null;
                 mImageView.setImageURI(null);
                 mDeleteImageButton.setVisibility(View.GONE);
                 mImageView.getLayoutParams().height = 0;
