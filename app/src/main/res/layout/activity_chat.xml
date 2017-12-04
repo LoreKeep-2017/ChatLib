@@ -44,7 +44,7 @@
 
         <Button
             android:id="@+id/attach_button"
-            android:background="@drawable/ic_attach_button"
+            android:background="@drawable/ic_image"
             android:clickable="true"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -52,7 +52,7 @@
 
         <EditText
             android:id="@+id/input_message_text"
-            android:hint="Введите сообщение"
+            android:hint="Написать сообщение"
             android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:layout_marginLeft="16dp"
