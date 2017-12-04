@@ -161,7 +161,7 @@ public class ChatActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == PICK_IMAGE && data != null) {
             mImageView.setImageURI(data.getData());
             mDeleteImageButton.setVisibility(View.VISIBLE);
             mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;

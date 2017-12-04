@@ -115,9 +115,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             mMessageTime.setText(message.getTime());
             if (message.getImageUrl() != null) {
-                Picasso.with(context).
-                        load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl()).
-                        into(mMessageImage);
+                Picasso.with(context)
+                        .load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl())
+                        .placeholder( R.drawable.progress_gif )
+                        .into(mMessageImage);
             }
         }
     }
@@ -142,9 +143,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             mMessageTime.setText(message.getTime());
             if (message.getImageUrl() != null) {
-                Picasso.with(context).
-                        load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl()).
-                        into(mMessageImage);
+                Picasso.with(context)
+                        .load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl())
+                        .placeholder( R.drawable.progress_gif )
+                        .into(mMessageImage);
             }
         }
     }
