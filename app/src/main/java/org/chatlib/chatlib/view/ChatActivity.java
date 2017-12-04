@@ -2,16 +2,11 @@ package org.chatlib.chatlib.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import org.chatlib.chatlib.R;
 import org.chatlib.chatlib.controller.ChatNetworkManager;
@@ -27,7 +23,6 @@ import org.chatlib.chatlib.controller.ChatNetworkManager;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Base64;
 
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -45,6 +40,7 @@ public class ChatActivity extends Activity {
     private ImageView mImageViewTmp;
     private Button mDeleteImageButton;
     private RecyclerView mChatRV;
+    private ProgressBar mProgressBar;
 
     private MessageAdapter mMessageAdapter;
     private ChatNetworkManager mNetworkManager;
@@ -85,7 +81,7 @@ public class ChatActivity extends Activity {
         mChatRV.setLayoutManager(linearLayoutManager);
         mChatRV.setAdapter(mMessageAdapter);
 
-
+        mProgressBar = findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -99,7 +95,7 @@ public class ChatActivity extends Activity {
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Log.e(TAG, "onClick: " + imageString );
+            Log.e(TAG, "onClick: " + imageString);
             if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || imageString != null) {
                 mNetworkManager.sendMessage(mInputMessageText.getText().toString(), imageString);
                 mInputMessageText.setText("");
@@ -159,12 +155,10 @@ public class ChatActivity extends Activity {
     //region result
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && data != null) {
 //            mImageView.setImageURI(data.getData());
-            Drawable myDrawable = getResources().getDrawable(R.drawable.ic_load_gif);
-            mImageView.setImageDrawable(myDrawable);
+            mProgressBar.setVisibility(View.VISIBLE);
             mImageViewTmp.setImageURI(data.getData());
             loadImageFromGallery = new LoadImageFromGallery(mImageView, mImageViewTmp, data.getData());
             loadImageFromGallery.execute();
@@ -172,36 +166,35 @@ public class ChatActivity extends Activity {
             mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
             mImageView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
         }
-        
+
     }
     //endregion
 
     //AsyncTask
-    private class LoadImageFromGallery extends AsyncTask<Void,Void,String>{
+    private class LoadImageFromGallery extends AsyncTask<Void, Void, String> {
 
         WeakReference weakReferenceImageView;
         WeakReference weakReferenceImageViewTmp;
         Uri imageUri;
 
-        public LoadImageFromGallery(ImageView imageView, ImageView imageViewTmp,Uri uri){
-             weakReferenceImageView = new WeakReference<>(imageView);
-             weakReferenceImageViewTmp = new WeakReference<>(imageViewTmp);
-             imageUri = uri;
+        public LoadImageFromGallery(ImageView imageView, ImageView imageViewTmp, Uri uri) {
+            weakReferenceImageView = new WeakReference<>(imageView);
+            weakReferenceImageViewTmp = new WeakReference<>(imageViewTmp);
+            imageUri = uri;
         }
-
 
 
         @Override
         protected String doInBackground(Void... voids) {
             String image = null;
-            if ( weakReferenceImageViewTmp != null) {
+            if (weakReferenceImageViewTmp != null) {
                 ImageView weak = (ImageView) weakReferenceImageViewTmp.get();
                 if (weak != null) {
                     weak.buildDrawingCache();
                     BitmapDrawable drawable = (BitmapDrawable) weak.getDrawable();
                     Bitmap bitmap = drawable.getBitmap();
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
                     byte[] bb = bos.toByteArray();
                     image = android.util.Base64.encodeToString(bb, android.util.Base64.DEFAULT);
 
@@ -227,6 +220,7 @@ public class ChatActivity extends Activity {
 
             }
 
+            mProgressBar.setVisibility(View.GONE);
         }
     }
     //end

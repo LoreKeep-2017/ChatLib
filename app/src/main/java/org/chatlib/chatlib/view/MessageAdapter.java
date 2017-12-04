@@ -1,7 +1,6 @@
 package org.chatlib.chatlib.view;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +12,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.chatlib.chatlib.R;
-import org.chatlib.chatlib.controller.ChatNetworkManager;
 import org.chatlib.chatlib.model.Message;
 
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -37,24 +32,24 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void addMessage(Message message) {
         if (message.getBody() != null
                 && !message.getBody().isEmpty() || message.getImageUrl() != null && !message.getImageUrl().isEmpty())
-        mMessages.add(message);
+            mMessages.add(message);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            Log.e(TAG, "onCreateViewHolder: "  + VIEW_TYPE_MESSAGE_SENT);
+            Log.e(TAG, "onCreateViewHolder: " + VIEW_TYPE_MESSAGE_SENT);
             View view = LayoutInflater
-                .from(parent.getContext())
-                .inflate(R.layout.message_item, parent, false);
-        return new MessageVH(view);
+                    .from(parent.getContext())
+                    .inflate(R.layout.message_item, parent, false);
+            return new MessageVH(view);
 
         } else {
-            Log.e(TAG, "onCreateViewHolder: "  + VIEW_TYPE_MESSAGE_RECEIVED);
+            Log.e(TAG, "onCreateViewHolder: " + VIEW_TYPE_MESSAGE_RECEIVED);
             View view = LayoutInflater
-                .from(parent.getContext())
-                .inflate(R.layout.message_receive_item, parent, false);
-        return new MessageReceiveVH(view);
+                    .from(parent.getContext())
+                    .inflate(R.layout.message_receive_item, parent, false);
+            return new MessageReceiveVH(view);
 
 
         }
@@ -84,7 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         Message message = mMessages.get(position);
-        if (message.getAuthor().equals("client")){
+        if (message.getAuthor().equals("client")) {
             Log.e(TAG, "getItemViewType: " + VIEW_TYPE_MESSAGE_SENT);
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
@@ -108,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         void bind(Message message) {
-            if (message.getBody() == null || message.getBody().isEmpty()){
+            if (message.getBody() == null || message.getBody().isEmpty()) {
                 mMessageText.setVisibility(View.GONE);
             } else {
                 mMessageText.setText(message.getBody());
@@ -116,8 +111,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mMessageTime.setText(message.getTime());
             if (message.getImageUrl() != null) {
                 Picasso.with(context)
-                        .load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl())
-                        .placeholder( R.drawable.progress_gif )
+                        .load("http://139.59.139.151/client/" + message.getIdRoom() + "/" + message.getImageUrl())
+                        .placeholder(R.drawable.progress_gif)
                         .into(mMessageImage);
             }
         }
@@ -136,7 +131,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         void bind(Message message) {
-            if (message.getBody() == null || message.getBody().isEmpty()){
+            if (message.getBody() == null || message.getBody().isEmpty()) {
                 mMessageText.setVisibility(View.GONE);
             } else {
                 mMessageText.setText(message.getBody());
@@ -144,8 +139,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mMessageTime.setText(message.getTime());
             if (message.getImageUrl() != null) {
                 Picasso.with(context)
-                        .load("http://139.59.139.151/client/"+message.getIdRoom()+"/"+message.getImageUrl())
-                        .placeholder( R.drawable.progress_gif )
+                        .load("http://139.59.139.151/client/" + message.getIdRoom() + "/" + message.getImageUrl())
+                        .placeholder(R.drawable.progress_gif)
                         .into(mMessageImage);
             }
         }
