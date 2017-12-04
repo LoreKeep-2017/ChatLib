@@ -6,15 +6,32 @@ android {
         applicationId "org.chatlib.chatlib"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
+
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file("/home/ilia/AndroidStudioProjects/apk.jks")
+            storePassword "516875"
+            keyAlias "key0"
+            keyPassword "516875"
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                signingConfig signingConfigs.release
+                proguardFiles getDefaultProguardFile("proguard-android.txt"), 'proguard-rules.pro'
+            }
         }
     }
+
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8

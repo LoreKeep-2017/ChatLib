@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
@@ -23,6 +25,7 @@ import org.chatlib.chatlib.R;
 import org.chatlib.chatlib.controller.ChatNetworkManager;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -39,11 +42,16 @@ public class ChatActivity extends Activity {
     private Button mSendMessage;
     private Button mAttachButton;
     private ImageView mImageView;
+    private ImageView mImageViewTmp;
     private Button mDeleteImageButton;
     private RecyclerView mChatRV;
 
     private MessageAdapter mMessageAdapter;
     private ChatNetworkManager mNetworkManager;
+
+    private LoadImageFromGallery loadImageFromGallery;
+
+    private String imageString;
 
     //region Activity Lifecycle
     @Override
@@ -62,6 +70,7 @@ public class ChatActivity extends Activity {
         mAttachButton.setOnClickListener(new AttachListener());
 
         mImageView = findViewById(R.id.input_image);
+        mImageViewTmp = findViewById(R.id.input_image_tmp);
 
         mDeleteImageButton = findViewById(R.id.delete_image);
         mDeleteImageButton.setOnClickListener(new DeleteImageListener());
@@ -90,18 +99,9 @@ public class ChatActivity extends Activity {
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            String image = null;
-            if (mImageView.getDrawable() != null) {
-                mImageView.buildDrawingCache();
-                BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
-                byte[] bb = bos.toByteArray();
-                image = android.util.Base64.encodeToString(bb, android.util.Base64.DEFAULT);
-            }
-            if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || image != null) {
-                mNetworkManager.sendMessage(mInputMessageText.getText().toString(), image);
+            Log.e(TAG, "onClick: " + imageString );
+            if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || imageString != null) {
+                mNetworkManager.sendMessage(mInputMessageText.getText().toString(), imageString);
                 mInputMessageText.setText("");
 
                 //clear image
@@ -162,7 +162,12 @@ public class ChatActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == PICK_IMAGE && data != null) {
-            mImageView.setImageURI(data.getData());
+//            mImageView.setImageURI(data.getData());
+            Drawable myDrawable = getResources().getDrawable(R.drawable.ic_load_gif);
+            mImageView.setImageDrawable(myDrawable);
+            mImageViewTmp.setImageURI(data.getData());
+            loadImageFromGallery = new LoadImageFromGallery(mImageView, mImageViewTmp, data.getData());
+            loadImageFromGallery.execute();
             mDeleteImageButton.setVisibility(View.VISIBLE);
             mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
             mImageView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -170,4 +175,59 @@ public class ChatActivity extends Activity {
         
     }
     //endregion
+
+    //AsyncTask
+    private class LoadImageFromGallery extends AsyncTask<Void,Void,String>{
+
+        WeakReference weakReferenceImageView;
+        WeakReference weakReferenceImageViewTmp;
+        Uri imageUri;
+
+        public LoadImageFromGallery(ImageView imageView, ImageView imageViewTmp,Uri uri){
+             weakReferenceImageView = new WeakReference<>(imageView);
+             weakReferenceImageViewTmp = new WeakReference<>(imageViewTmp);
+             imageUri = uri;
+        }
+
+
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String image = null;
+            if ( weakReferenceImageViewTmp != null) {
+                ImageView weak = (ImageView) weakReferenceImageViewTmp.get();
+                if (weak != null) {
+                    weak.buildDrawingCache();
+                    BitmapDrawable drawable = (BitmapDrawable) weak.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
+                    byte[] bb = bos.toByteArray();
+                    image = android.util.Base64.encodeToString(bb, android.util.Base64.DEFAULT);
+
+                }
+            }
+            return image;
+        }
+
+        @Override
+        protected void onPostExecute(String image) {
+            super.onPostExecute(image);
+
+            if (image != null) {
+                if (weakReferenceImageView != null && weakReferenceImageViewTmp != null) {
+                    ImageView weak = (ImageView) weakReferenceImageView.get();
+                    ImageView weakTmp = (ImageView) weakReferenceImageViewTmp.get();
+                    if (weak != null && weakTmp != null) {
+                        weak.setImageURI(imageUri);
+                        weakTmp.setImageURI(null);
+                        imageString = image;
+                    }
+                }
+
+            }
+
+        }
+    }
+    //end
 }
