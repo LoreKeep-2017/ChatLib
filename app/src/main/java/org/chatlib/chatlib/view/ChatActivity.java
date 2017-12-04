@@ -37,17 +37,16 @@ public class ChatActivity extends Activity {
     private Button mSendMessage;
     private Button mAttachButton;
     private ImageView mImageView;
-    private ImageView mImageViewTmp;
     private Button mDeleteImageButton;
     private RecyclerView mChatRV;
     private ProgressBar mProgressBar;
+    private ProgressBar mProgressBarNew;
 
     private MessageAdapter mMessageAdapter;
     private ChatNetworkManager mNetworkManager;
 
     private LoadImageFromGallery loadImageFromGallery;
 
-    private ImageView imageViewNewNessageProgress;
 
     private String imageString;
 
@@ -68,8 +67,6 @@ public class ChatActivity extends Activity {
         mAttachButton.setOnClickListener(new AttachListener());
 
         mImageView = findViewById(R.id.input_image);
-        mImageViewTmp = findViewById(R.id.input_image_tmp);
-        imageViewNewNessageProgress = findViewById(R.id.new_image_progress);
 
         mDeleteImageButton = findViewById(R.id.delete_image);
         mDeleteImageButton.setOnClickListener(new DeleteImageListener());
@@ -85,6 +82,7 @@ public class ChatActivity extends Activity {
         mChatRV.setAdapter(mMessageAdapter);
 
         mProgressBar = findViewById(R.id.progress_bar);
+        mProgressBarNew = findViewById(R.id.new_image_progress);
     }
 
     @Override
@@ -98,9 +96,8 @@ public class ChatActivity extends Activity {
     private class SendMessage implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Log.e(TAG, "onClick: " + imageString);
             if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || imageString != null) {
-                imageViewNewNessageProgress.setVisibility(View.VISIBLE);
+                mProgressBarNew.setVisibility(View.VISIBLE);
                 mNetworkManager.sendMessage(mInputMessageText.getText().toString(), imageString);
                 mInputMessageText.setText("");
 
@@ -134,6 +131,7 @@ public class ChatActivity extends Activity {
             mImageView.getLayoutParams().height = 0;
             mImageView.getLayoutParams().width = 0;
             mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            imageString=null;
         }
     }
 
@@ -146,11 +144,10 @@ public class ChatActivity extends Activity {
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            Log.e(TAG, "onMessage: yessssssssss" );
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    imageViewNewNessageProgress.setVisibility(View.GONE);
+                    mProgressBarNew.setVisibility(View.GONE);
                 }
             });
 
@@ -170,12 +167,12 @@ public class ChatActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && data != null) {
-//            mImageView.setImageURI(data.getData());
+            mImageView.setVisibility(View.GONE);
+            mImageView.setImageURI(data.getData());
             mProgressBar.setVisibility(View.VISIBLE);
-            mImageViewTmp.setImageURI(data.getData());
-            loadImageFromGallery = new LoadImageFromGallery(mImageView, mImageViewTmp, data.getData());
+            mSendMessage.setEnabled(false);
+            loadImageFromGallery = new LoadImageFromGallery(mImageView, data.getData());
             loadImageFromGallery.execute();
-            mDeleteImageButton.setVisibility(View.VISIBLE);
             mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
             mImageView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
         }
@@ -187,12 +184,10 @@ public class ChatActivity extends Activity {
     private class LoadImageFromGallery extends AsyncTask<Void, Void, String> {
 
         WeakReference weakReferenceImageView;
-        WeakReference weakReferenceImageViewTmp;
         Uri imageUri;
 
-        public LoadImageFromGallery(ImageView imageView, ImageView imageViewTmp, Uri uri) {
+        public LoadImageFromGallery(ImageView imageView, Uri uri) {
             weakReferenceImageView = new WeakReference<>(imageView);
-            weakReferenceImageViewTmp = new WeakReference<>(imageViewTmp);
             imageUri = uri;
         }
 
@@ -200,8 +195,8 @@ public class ChatActivity extends Activity {
         @Override
         protected String doInBackground(Void... voids) {
             String image = null;
-            if (weakReferenceImageViewTmp != null) {
-                ImageView weak = (ImageView) weakReferenceImageViewTmp.get();
+            if (weakReferenceImageView != null) {
+                ImageView weak = (ImageView) weakReferenceImageView.get();
                 if (weak != null) {
                     weak.buildDrawingCache();
                     BitmapDrawable drawable = (BitmapDrawable) weak.getDrawable();
@@ -221,18 +216,17 @@ public class ChatActivity extends Activity {
             super.onPostExecute(image);
 
             if (image != null) {
-                if (weakReferenceImageView != null && weakReferenceImageViewTmp != null) {
+                if (weakReferenceImageView != null) {
                     ImageView weak = (ImageView) weakReferenceImageView.get();
-                    ImageView weakTmp = (ImageView) weakReferenceImageViewTmp.get();
-                    if (weak != null && weakTmp != null) {
-                        weak.setImageURI(imageUri);
-                        weakTmp.setImageURI(null);
+                    if (weak != null) {
                         imageString = image;
                     }
                 }
 
             }
-
+            mSendMessage.setEnabled(true);
+            mDeleteImageButton.setVisibility(View.VISIBLE);
+            mImageView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }
     }
