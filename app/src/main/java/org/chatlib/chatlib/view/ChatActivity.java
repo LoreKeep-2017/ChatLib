@@ -51,6 +51,8 @@ public class ChatActivity extends Activity {
 
     private LoadImageFromGallery loadImageFromGallery;
 
+    private ImageView imageViewNewNessageProgress;
+
     private String imageString;
 
     //region Activity Lifecycle
@@ -71,6 +73,7 @@ public class ChatActivity extends Activity {
 
         mImageView = findViewById(R.id.input_image);
         mImageViewTmp = findViewById(R.id.input_image_tmp);
+        imageViewNewNessageProgress = findViewById(R.id.new_image_progress);
 
         mDeleteImageButton = findViewById(R.id.delete_image);
         mDeleteImageButton.setOnClickListener(new DeleteImageListener());
@@ -101,6 +104,7 @@ public class ChatActivity extends Activity {
         public void onClick(View view) {
             Log.e(TAG, "onClick: " + imageString );
             if (mInputMessageText.getText() != null && !mInputMessageText.getText().equals("") || imageString != null) {
+                imageViewNewNessageProgress.setVisibility(View.VISIBLE);
                 mNetworkManager.sendMessage(mInputMessageText.getText().toString(), imageString);
                 mInputMessageText.setText("");
 
@@ -145,6 +149,14 @@ public class ChatActivity extends Activity {
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
+            Log.e(TAG, "onMessage: yessssssssss" );
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    imageViewNewNessageProgress.setVisibility(View.GONE);
+                }
+            });
+
             mMessageAdapter.addMessage(mNetworkManager.getResponseMessage(text));
             runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
         }
