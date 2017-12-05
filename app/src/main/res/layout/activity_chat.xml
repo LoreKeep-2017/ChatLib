@@ -20,15 +20,14 @@
         tools:listitem="@layout/message_item"/>
 
 
-
-    <ImageView
-        android:visibility="gone"
+    <ProgressBar
         android:id="@+id/new_image_progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_load_gif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/message_divider"/>
+        app:layout_constraintBottom_toTopOf="@id/message_divider"
+        android:visibility="gone"/>
 
 
 
@@ -42,6 +41,8 @@
         app:layout_constraintBottom_toTopOf="@+id/edit_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
+
 
     <LinearLayout
         android:id="@+id/edit_message"
@@ -80,17 +81,21 @@
             android:id="@+id/input_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:adjustViewBounds= "true"
-            android:maxHeight="200dp"
-            android:maxWidth="100dp"
+            android:minHeight="200dp"
+            android:minWidth="100dp"
+            android:maxHeight="300dp"
+            android:maxWidth="150dp"
             />
 
-        <ImageView
-            android:id="@+id/input_image_tmp"
+        <ProgressBar
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            />
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
 
         <Button
             android:id="@+id/delete_image"
@@ -106,7 +111,7 @@
 
         <Button
             android:id="@+id/send_button"
-            android:background="@drawable/ic_send_button"
+            android:background="@drawable/button_send"
             android:clickable="true"
             android:layout_width="36dp"
             android:layout_height="36dp"
