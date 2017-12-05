@@ -29,10 +29,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.mMessages = mRequestBodies;
     }
 
-    public void addMessage(Message message) {
-        if (message.getBody() != null
-                && !message.getBody().isEmpty() || message.getImageUrl() != null && !message.getImageUrl().isEmpty())
-            mMessages.add(message);
+    public void addMessages(Message... messages) {
+        for (Message message : messages) {
+            if (message.getBody() != null
+                    && !message.getBody().isEmpty() || message.getImageUrl() != null && !message.getImageUrl().isEmpty())
+                mMessages.add(message);
+        }
     }
 
     @Override

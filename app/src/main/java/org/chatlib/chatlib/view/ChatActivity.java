@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 
 import org.chatlib.chatlib.R;
 import org.chatlib.chatlib.controller.ChatNetworkManager;
+import org.chatlib.chatlib.model.Message;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -29,6 +30,7 @@ import okhttp3.WebSocketListener;
 
 public class ChatActivity extends Activity {
     private static final String TAG = "ChatActivity ----->";
+    private static final String RESTORE_KEY = "room_id";
     public static final int PICK_IMAGE = 1;
 
     private LinearLayout mLinearLayout;
@@ -90,6 +92,21 @@ public class ChatActivity extends Activity {
         super.onDestroy();
         mNetworkManager.disconnect();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE && data != null) {
+            mImageView.setVisibility(View.GONE);
+            mImageView.setImageURI(data.getData());
+            mProgressBar.setVisibility(View.VISIBLE);
+            mSendMessage.setEnabled(false);
+            loadImageFromGallery = new LoadImageFromGallery(mImageView, data.getData());
+            loadImageFromGallery.execute();
+            mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            mImageView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        }
+
+    }
     //endregion
 
     //region Listener
@@ -138,20 +155,20 @@ public class ChatActivity extends Activity {
     public class WSListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, okhttp3.Response response) {
-            mMessageAdapter.addMessage(mNetworkManager.sendAndGetFirstMessage());
+            Message message = mNetworkManager.sendAndGetFirstMessage();
+            getPreferences(MODE_PRIVATE)
+                    .edit()
+                    .putInt(RESTORE_KEY, message.getIdRoom())
+                    .apply();
+            mMessageAdapter.addMessages();
             runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgressBarNew.setVisibility(View.GONE);
-                }
-            });
+            runOnUiThread(() -> mProgressBarNew.setVisibility(View.GONE));
 
-            mMessageAdapter.addMessage(mNetworkManager.getResponseMessage(text));
+            mMessageAdapter.addMessages(mNetworkManager.getResponseMessage(text));
             runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
         }
 
@@ -162,25 +179,7 @@ public class ChatActivity extends Activity {
     }
     //endregion
 
-    //region result
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGE && data != null) {
-            mImageView.setVisibility(View.GONE);
-            mImageView.setImageURI(data.getData());
-            mProgressBar.setVisibility(View.VISIBLE);
-            mSendMessage.setEnabled(false);
-            loadImageFromGallery = new LoadImageFromGallery(mImageView, data.getData());
-            loadImageFromGallery.execute();
-            mImageView.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            mImageView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        }
-
-    }
-    //endregion
-
-    //AsyncTask
+    //region AsyncTask
     private class LoadImageFromGallery extends AsyncTask<Void, Void, String> {
 
         WeakReference weakReferenceImageView;
@@ -230,5 +229,5 @@ public class ChatActivity extends Activity {
             mProgressBar.setVisibility(View.GONE);
         }
     }
-    //end
+    //endregion
 }

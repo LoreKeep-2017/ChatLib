@@ -6,11 +6,8 @@ import org.chatlib.chatlib.model.client.ClientRequest;
 import org.chatlib.chatlib.model.operator.OperatorResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,20 +15,24 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class ChatNetworkManager {
-    private final Request mApiReq = new Request.Builder()
-            .url("ws://139.59.139.151/api/v1/client")
+
+    private static final String SCHEME_AND_HOST = "ws://139.59.139.151/";
+    private static final String GREETINGS_URL_PATH = "greating";
+    private static final String BASE_URL_PATH = "api/v1/client";
+    private static final String RESTORE_URL_PATH = "diff/?id=*&size=0";
+
+    private final Request.Builder mBaseApiReqBuilder = new Request.Builder()
             .addHeader("Origin", "*")
             .addHeader("Pragma", "no-cache")
             .addHeader("Cache-Control", "no-cache")
-            .addHeader("Sec-WebSocket-Extensions", "permessage-deflate")
+            .addHeader("Sec-WebSocket-Extensions", "permessage-deflate");
+
+    private final Request mBaseApiReq = mBaseApiReqBuilder
+            .url(SCHEME_AND_HOST.concat(BASE_URL_PATH))
             .build();
 
-    private final Request mGreeting = new Request.Builder()
-            .url("http://139.59.139.151/greating/")
-            .addHeader("Origin", "*")
-            .addHeader("Pragma", "no-cache")
-            .addHeader("Cache-Control", "no-cache")
-            .addHeader("Sec-WebSocket-Extensions", "permessage-deflate")
+    private final Request mGreeting = mBaseApiReqBuilder
+            .url(SCHEME_AND_HOST.concat(GREETINGS_URL_PATH))
             .build();
 
     private static boolean isFirst = true;
@@ -42,7 +43,7 @@ public class ChatNetworkManager {
 
     public ChatNetworkManager(WebSocketListener listener) {
         mOkClient = new OkHttpClient();
-        mWebSocket = mOkClient.newWebSocket(mApiReq, listener);
+        mWebSocket = mOkClient.newWebSocket(mBaseApiReq, listener);
         mMessageParser = new MessageParser();
     }
 
