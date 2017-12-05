@@ -28,8 +28,6 @@ public class Message {
     private String mImageUrl;
 
 
-
-
     public Message() {
 
     }

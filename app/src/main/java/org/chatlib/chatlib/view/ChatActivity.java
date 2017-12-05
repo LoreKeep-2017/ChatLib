@@ -2,6 +2,7 @@ package org.chatlib.chatlib.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -109,6 +110,14 @@ public class ChatActivity extends Activity {
     }
     //endregion
 
+    public void saveId(int id) {
+        if (!getPreferences(MODE_PRIVATE).contains(RESTORE_KEY))
+            getPreferences(MODE_PRIVATE)
+                    .edit()
+                    .putInt(RESTORE_KEY, id)
+                    .apply();
+    }
+
     //region Listener
     private class SendMessage implements View.OnClickListener {
         @Override
@@ -148,27 +157,36 @@ public class ChatActivity extends Activity {
             mImageView.getLayoutParams().height = 0;
             mImageView.getLayoutParams().width = 0;
             mLinearLayout.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            imageString=null;
+            imageString = null;
         }
     }
 
     public class WSListener extends WebSocketListener {
         @Override
         public void onOpen(WebSocket webSocket, okhttp3.Response response) {
-            Message message = mNetworkManager.sendAndGetFirstMessage();
-            getPreferences(MODE_PRIVATE)
-                    .edit()
-                    .putInt(RESTORE_KEY, message.getIdRoom())
-                    .apply();
-            mMessageAdapter.addMessages();
-            runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
+            SharedPreferences pref = getPreferences(MODE_PRIVATE);
+            if (!pref.contains(RESTORE_KEY)) {
+                Message message = mNetworkManager.sendAndGetFirstMessage();
+                mMessageAdapter.addMessages(message);
+                runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
+            } else {
+                Message[] messages = mNetworkManager
+                        .sendRestoreMessage(pref.getInt(RESTORE_KEY, 0));
+                mMessageAdapter.addMessages(messages);
+                runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
+            }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             runOnUiThread(() -> mProgressBarNew.setVisibility(View.GONE));
 
-            mMessageAdapter.addMessages(mNetworkManager.getResponseMessage(text));
+            Message mes = mNetworkManager.getResponseMessage(text);
+
+            if (mes.getIdRoom() != 0)
+                saveId(mes.getIdRoom());
+
+            mMessageAdapter.addMessages(mes);
             runOnUiThread(() -> mChatRV.setAdapter(mMessageAdapter));
         }
 

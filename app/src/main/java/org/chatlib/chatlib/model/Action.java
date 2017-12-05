@@ -5,7 +5,8 @@ public enum Action {
     CHANGE_STATUS_ROOM("changeStatusRoom"),
     CLOSE_ROOM("closeRoom"),
     GET_ALL_MESSAGES("getAllMessages"),
-    SEND_FIRST_MESSAGE("sendFirstMessage");
+    SEND_FIRST_MESSAGE("sendFirstMessage"),
+    RESTORE_ROOM("getDiff");
 
     String mAction;
 
